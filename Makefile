@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := help
 
-NAME := inception
+NAME         := inception
 COMPOSE_FILE := srcs/docker-compose.yml
-COMPOSE := docker compose -f $(COMPOSE_FILE)
+COMPOSE      := docker compose -f $(COMPOSE_FILE)
 
 .PHONY: all up down start stop build ps logs clean fclean re help check-compose
 
