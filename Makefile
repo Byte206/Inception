@@ -2,37 +2,39 @@
 
 NAME         := inception
 COMPOSE_FILE := srcs/docker-compose.yml
-COMPOSE      := docker compose -f $(COMPOSE_FILE)
+DOCKER_PATH  := $(shell if command -v docker.exe >/dev/null 2>&1; then command -v docker.exe; elif command -v docker >/dev/null 2>&1; then command -v docker; fi)
+DOCKER       := "$(DOCKER_PATH)"
+COMPOSE      := $(DOCKER) compose -f $(COMPOSE_FILE)
 
-.PHONY: all up down start stop build ps logs clean fclean re help check-compose
+.PHONY: all up down start stop build ps logs clean fclean re help check-compose check-docker
 
 all: up
 
-up: check-compose
+up: check-docker check-compose
 	$(COMPOSE) up -d --build
 
-down: check-compose
+down: check-docker check-compose
 	$(COMPOSE) down
 
-start: check-compose
+start: check-docker check-compose
 	$(COMPOSE) start
 
-stop: check-compose
+stop: check-docker check-compose
 	$(COMPOSE) stop
 
-build: check-compose
+build: check-docker check-compose
 	$(COMPOSE) build
 
-ps: check-compose
+ps: check-docker check-compose
 	$(COMPOSE) ps
 
-logs: check-compose
+logs: check-docker check-compose
 	$(COMPOSE) logs -f
 
-clean: check-compose
+clean: check-docker check-compose
 	$(COMPOSE) down --remove-orphans
 
-fclean: check-compose
+fclean: check-docker check-compose
 	$(COMPOSE) down --rmi all --volumes --remove-orphans
 
 re: fclean up
@@ -53,3 +55,7 @@ help:
 
 check-compose:
 	@test -f $(COMPOSE_FILE) || { printf "Error: missing %s\n" $(COMPOSE_FILE); exit 1; }
+
+check-docker:
+	@test -n "$(DOCKER_PATH)" || { printf "Error: Docker CLI not found. Enable Docker Desktop WSL integration or install docker.\n"; exit 1; }
+	@$(DOCKER) info >/dev/null 2>&1 || { printf "Error: Docker engine is not running or not reachable. Start Docker Desktop and make sure WSL integration is enabled.\n"; exit 1; }
