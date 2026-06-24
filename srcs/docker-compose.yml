@@ -28,6 +28,8 @@ services:
   nginx:
     build:
       context: ./requirements/nginx
+      args:
+        DOMAIN_NAME: ${DOMAIN_NAME}
     container_name: nginx
     depends_on:
       - wordpress

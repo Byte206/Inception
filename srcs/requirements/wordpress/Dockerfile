@@ -23,7 +23,7 @@ RUN mkdir -p /var/www/html /run/php
 COPY tools/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh && \
-    sed -i 's|^listen = .*|listen = 9000|' /etc/php/8.2/fpm/pool.d/www.conf && \
+    sed -i 's|^listen = .*|listen = 0.0.0.0:9000|' /etc/php/8.2/fpm/pool.d/www.conf && \
     sed -i 's|^;clear_env = no|clear_env = no|' /etc/php/8.2/fpm/pool.d/www.conf
 
 WORKDIR /var/www/html
