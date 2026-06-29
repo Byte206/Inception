@@ -10,6 +10,12 @@ services:
     networks:
       - inception
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
 
   wordpress:
     build:
@@ -18,12 +24,19 @@ services:
     env_file:
       - .env
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     volumes:
       - wordpress_data:/var/www/html
     networks:
       - inception
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -x php-fpm8.2 >/dev/null"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
 
   nginx:
     build:
@@ -32,7 +45,8 @@ services:
         DOMAIN_NAME: ${DOMAIN_NAME}
     container_name: nginx
     depends_on:
-      - wordpress
+      wordpress:
+        condition: service_healthy
     ports:
       - "443:443"
     volumes:
