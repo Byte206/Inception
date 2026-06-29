@@ -95,7 +95,7 @@ check-env:
 		wp_admin_email=$$(prompt_default "WP_ADMIN_EMAIL" "gabimagister@outlook.es"); \
 		wp_user=$$(prompt_default "WP_USER" "visitor"); \
 		wp_user_pass=$$(prompt_secret_default "WP_USER_PASSWORD: " "1212"); \
-		wp_user_email=$$(prompt_default "WP_USER_EMAIL" "gabimagister@outlook.es"); \
+		wp_user_email=$$(prompt_default "WP_USER_EMAIL" "gabimagister@outlook.com"); \
 		mkdir -p srcs; \
 		printf "DOMAIN_NAME=%s\n" "$$domain" > srcs/.env; \
 		printf "DB_NAME=%s\n" "$$db_name" >> srcs/.env; \
