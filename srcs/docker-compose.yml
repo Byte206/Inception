@@ -32,7 +32,7 @@ services:
       - inception
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pgrep -x php-fpm8.2 >/dev/null"]
+      test: ["CMD-SHELL", "php -r 'exit((int)!@fsockopen(\"127.0.0.1\", 9000));'"]
       interval: 5s
       timeout: 3s
       retries: 5
