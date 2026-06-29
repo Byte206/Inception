@@ -61,7 +61,7 @@ check-env:
 		prompt_default() { \
 			prompt="$$1"; \
 			default_value="$$2"; \
-			printf "%s [%s]: " "$$prompt" "$$default_value"; \
+			printf "%s [%s]: " "$$prompt" "$$default_value" >&2; \
 			IFS= read -r input_value; \
 			printf "%s" "$${input_value:-$$default_value}"; \
 		}; \
