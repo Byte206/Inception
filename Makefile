@@ -7,11 +7,13 @@ DOCKER_PATH  := $(shell if command -v docker.exe >/dev/null 2>&1; then command -
 DOCKER       := "$(DOCKER_PATH)"
 COMPOSE      := $(shell if command -v docker-compose >/dev/null 2>&1; then command -v docker-compose; else printf '%s' "$(DOCKER) compose"; fi) -f $(COMPOSE_FILE)
 
-.PHONY: all up down start stop build ps logs clean fclean re help check-compose check-docker check-domain check-env
+DATA_DIR     := /home/gamorcil/data
 
-all: check-env up
+.PHONY: all up down start stop build ps logs clean fclean re help check-compose check-docker check-domain check-env init-dirs
 
-up: check-docker check-compose check-domain
+all: check-env init-dirs up
+
+up: check-docker check-compose check-domain init-dirs
 	$(COMPOSE) up -d --build
 
 down: check-docker check-compose check-domain
@@ -37,8 +39,13 @@ clean: check-docker check-compose check-domain
 
 fclean: check-docker check-compose check-domain
 	$(COMPOSE) down --rmi all --volumes --remove-orphans
+	rm -rf $(DATA_DIR)
 
 re: fclean up
+
+init-dirs:
+	@mkdir -p $(DATA_DIR)/mariadb
+	@mkdir -p $(DATA_DIR)/wordpress
 
 help:
 	@printf "Available targets:\n"
