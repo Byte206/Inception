@@ -58,28 +58,36 @@ check-env:
 	@if [ ! -f srcs/.env ]; then \
 		printf "\n🔧 Creating srcs/.env file...\n"; \
 		printf "\n📝 Please enter the required configuration values:\n\n"; \
-		prompt_secret() { \
+		prompt_default() { \
 			prompt="$$1"; \
+			default_value="$$2"; \
+			printf "%s [%s]: " "$$prompt" "$$default_value"; \
+			IFS= read -r input_value; \
+			printf "%s" "$${input_value:-$$default_value}"; \
+		}; \
+		prompt_secret_default() { \
+			prompt="$$1"; \
+			default_value="$$2"; \
 			printf "%s" "$$prompt" >&2; \
 			old_stty=$$(stty -g); \
 			stty -echo; \
 			IFS= read -r secret_value; \
 			stty "$$old_stty"; \
 			printf "\n" >&2; \
-			printf "%s" "$$secret_value"; \
+			printf "%s" "$${secret_value:-$$default_value}"; \
 		}; \
-		printf "DOMAIN_NAME (e.g., gamorcil.42.fr): "; IFS= read -r domain; \
-		printf "DB_NAME (e.g., wordpress): "; IFS= read -r db_name; \
-		printf "DB_USER (e.g., gamorcil): "; IFS= read -r db_user; \
-		db_pass=$$(prompt_secret "DB_PASSWORD: "); \
-		printf "DB_HOST (e.g., mariadb): "; IFS= read -r db_host; \
-		mysql_root_pass=$$(prompt_secret "MYSQL_ROOT_PASSWORD: "); \
-		printf "WP_ADMIN_USER (e.g., gamorcil): "; IFS= read -r wp_admin_user; \
-		wp_admin_pass=$$(prompt_secret "WP_ADMIN_PASSWORD: "); \
-		printf "WP_ADMIN_EMAIL (e.g., admin@example.com): "; IFS= read -r wp_admin_email; \
-		printf "WP_USER (e.g., visitor): "; IFS= read -r wp_user; \
-		wp_user_pass=$$(prompt_secret "WP_USER_PASSWORD: "); \
-		printf "WP_USER_EMAIL (e.g., visitor@example.com): "; IFS= read -r wp_user_email; \
+		domain=$$(prompt_default "DOMAIN_NAME" "gamorcil.42.fr"); \
+		db_name=$$(prompt_default "DB_NAME" "wordpress"); \
+		db_user=$$(prompt_default "DB_USER" "gamorcil"); \
+		db_pass=$$(prompt_secret_default "DB_PASSWORD: " "122"); \
+		db_host=$$(prompt_default "DB_HOST" "mariadb"); \
+		mysql_root_pass=$$(prompt_secret_default "MYSQL_ROOT_PASSWORD: " "1212"); \
+		wp_admin_user=$$(prompt_default "WP_ADMIN_USER" "gamorcil"); \
+		wp_admin_pass=$$(prompt_secret_default "WP_ADMIN_PASSWORD: " "1212"); \
+		wp_admin_email=$$(prompt_default "WP_ADMIN_EMAIL" "gabimagister@outlook.es"); \
+		wp_user=$$(prompt_default "WP_USER" "visitor"); \
+		wp_user_pass=$$(prompt_secret_default "WP_USER_PASSWORD: " "1212"); \
+		wp_user_email=$$(prompt_default "WP_USER_EMAIL" "gabimagister@outlook.es"); \
 		mkdir -p srcs; \
 		printf "DOMAIN_NAME=%s\n" "$$domain" > srcs/.env; \
 		printf "DB_NAME=%s\n" "$$db_name" >> srcs/.env; \
