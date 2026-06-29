@@ -58,19 +58,29 @@ check-env:
 	@if [ ! -f srcs/.env ]; then \
 		printf "\n🔧 Creating srcs/.env file...\n"; \
 		printf "\n📝 Please enter the required configuration values:\n\n"; \
-		read -p "DOMAIN_NAME (e.g., gamorcil.42.fr): " domain; \
-		read -p "DB_NAME (e.g., wordpress): " db_name; \
-		read -p "DB_USER (e.g., gamorcil): " db_user; \
-		read -sp "DB_PASSWORD: " db_pass; echo ""; \
-		read -p "DB_HOST (e.g., mariadb): " db_host; \
-		read -sp "MYSQL_ROOT_PASSWORD: " mysql_root_pass; echo ""; \
-		read -p "WP_ADMIN_USER (e.g., gamorcil): " wp_admin_user; \
-		read -sp "WP_ADMIN_PASSWORD: " wp_admin_pass; echo ""; \
-		read -p "WP_ADMIN_EMAIL (e.g., admin@example.com): " wp_admin_email; \
-		read -p "WP_USER (e.g., visitor): " wp_user; \
-		read -sp "WP_USER_PASSWORD: " wp_user_pass; echo ""; \
-		read -p "WP_USER_EMAIL (e.g., visitor@example.com): " wp_user_email; \
-		\
+		prompt_secret() { \
+			prompt="$$1"; \
+			printf "%s" "$$prompt"; \
+			old_stty=$$(stty -g); \
+			stty -echo; \
+			IFS= read -r secret_value; \
+			stty "$$old_stty"; \
+			printf "\n"; \
+			printf "%s" "$$secret_value"; \
+		}; \
+		printf "DOMAIN_NAME (e.g., gamorcil.42.fr): "; IFS= read -r domain; \
+		printf "DB_NAME (e.g., wordpress): "; IFS= read -r db_name; \
+		printf "DB_USER (e.g., gamorcil): "; IFS= read -r db_user; \
+		db_pass=$$(prompt_secret "DB_PASSWORD: "); \
+		printf "DB_HOST (e.g., mariadb): "; IFS= read -r db_host; \
+		mysql_root_pass=$$(prompt_secret "MYSQL_ROOT_PASSWORD: "); \
+		printf "WP_ADMIN_USER (e.g., gamorcil): "; IFS= read -r wp_admin_user; \
+		wp_admin_pass=$$(prompt_secret "WP_ADMIN_PASSWORD: "); \
+		printf "WP_ADMIN_EMAIL (e.g., admin@example.com): "; IFS= read -r wp_admin_email; \
+		printf "WP_USER (e.g., visitor): "; IFS= read -r wp_user; \
+		wp_user_pass=$$(prompt_secret "WP_USER_PASSWORD: "); \
+		printf "WP_USER_EMAIL (e.g., visitor@example.com): "; IFS= read -r wp_user_email; \
+		mkdir -p srcs; \
 		printf "DOMAIN_NAME=%s\n" "$$domain" > srcs/.env; \
 		printf "DB_NAME=%s\n" "$$db_name" >> srcs/.env; \
 		printf "DB_USER=%s\n" "$$db_user" >> srcs/.env; \
