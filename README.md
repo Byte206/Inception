@@ -32,6 +32,23 @@ echo "your_wp_admin_password"> secrets/wp_admin_password.txt
 
 **3. Fill in `.env` with your settings** (login, domain, db name, etc.)
 
+You can create this file manually or let the `Makefile` create it for you the first time you run `make all`. If `srcs/.env` does not exist, `make all` will ask you for each value and generate the file automatically.
+
+The variables used in `.env` are:
+
+- `DOMAIN_NAME`: your local domain, used by NGINX and WordPress to build the site URL.
+- `DB_NAME`: the name of the MariaDB database that WordPress will use.
+- `DB_USER`: the database user that WordPress uses to connect to MariaDB.
+- `DB_PASSWORD`: the password for `DB_USER`.
+- `DB_HOST`: the hostname of the database container, usually `mariadb`.
+- `MYSQL_ROOT_PASSWORD`: the MariaDB root password used when the database container is initialized.
+- `WP_ADMIN_USER`: the username for the WordPress administrator account.
+- `WP_ADMIN_PASSWORD`: the password for the WordPress administrator account.
+- `WP_ADMIN_EMAIL`: the email address for the WordPress administrator account.
+- `WP_USER`: the username for the extra WordPress user created by the entrypoint script.
+- `WP_USER_PASSWORD`: the password for that extra WordPress user.
+- `WP_USER_EMAIL`: the email address for that extra WordPress user.
+
 **4. Run:**
 ```bash
 make

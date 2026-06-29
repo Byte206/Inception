@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
 NAME         := inception
-DOMAIN_NAME  := $(shell if [ -f srcs/.env ]; then awk -F= '/^DOMAIN_NAME=/{print $$2; exit}' srcs/.env; fi)
+DOMAIN_NAME  = $(shell if [ -f srcs/.env ]; then awk -F= '/^DOMAIN_NAME=/{print $$2; exit}' srcs/.env; fi)
 COMPOSE_FILE := srcs/docker-compose.yml
 DOCKER_PATH  := $(shell if command -v docker.exe >/dev/null 2>&1; then command -v docker.exe; elif command -v docker >/dev/null 2>&1; then command -v docker; fi)
 DOCKER       := "$(DOCKER_PATH)"
@@ -60,12 +60,12 @@ check-env:
 		printf "\n📝 Please enter the required configuration values:\n\n"; \
 		prompt_secret() { \
 			prompt="$$1"; \
-			printf "%s" "$$prompt"; \
+			printf "%s" "$$prompt" >&2; \
 			old_stty=$$(stty -g); \
 			stty -echo; \
 			IFS= read -r secret_value; \
 			stty "$$old_stty"; \
-			printf "\n"; \
+			printf "\n" >&2; \
 			printf "%s" "$$secret_value"; \
 		}; \
 		printf "DOMAIN_NAME (e.g., gamorcil.42.fr): "; IFS= read -r domain; \
@@ -100,9 +100,10 @@ check-compose:
 	@test -f $(COMPOSE_FILE) || { printf "Error: missing %s\n" $(COMPOSE_FILE); exit 1; }
 
 check-domain:
-	@test -n "$(DOMAIN_NAME)" || { printf "Error: DOMAIN_NAME is missing from srcs/.env\n"; exit 1; }
-	@getent hosts $(DOMAIN_NAME) >/dev/null 2>&1 || { \
-		printf "Error: %s does not resolve on this machine. Add '127.0.0.1 %s' to /etc/hosts, then reopen the browser.\n" $(DOMAIN_NAME) $(DOMAIN_NAME); \
+	@domain_name=$$(awk -F= '/^DOMAIN_NAME=/{print $$2; exit}' srcs/.env); \
+	test -n "$$domain_name" || { printf "Error: DOMAIN_NAME is missing from srcs/.env\n"; exit 1; }; \
+	getent hosts "$$domain_name" >/dev/null 2>&1 || { \
+		printf "Error: %s does not resolve on this machine. Add '127.0.0.1 %s' to /etc/hosts, then reopen the browser.\n" "$$domain_name" "$$domain_name"; \
 		exit 1; \
 	}
 
