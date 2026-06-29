@@ -39,7 +39,7 @@ clean: check-docker check-compose check-domain
 
 fclean: check-docker check-compose check-domain
 	$(COMPOSE) down --rmi all --volumes --remove-orphans
-	rm -rf $(DATA_DIR)
+	sudo rm -rf $(DATA_DIR)
 
 re: fclean up
 
