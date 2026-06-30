@@ -24,7 +24,7 @@ echo "127.0.0.1   yourlogin.42.fr" | sudo tee -a /etc/hosts
 
 **3. Create the `.env` file**
 
-Copy the example and fill in your values:
+Copy the example and fill in your values or use the makefile script to make a new one:
 
 ```bash
 cp .env.example .env
@@ -33,25 +33,21 @@ cp .env.example .env
 Required variables:
 
 ```
-DOMAIN_NAME=yourlogin.42.fr
-MYSQL_DATABASE=wordpress
-MYSQL_USER=wpuser
-WP_ADMIN_USER=admin
-WP_ADMIN_EMAIL=admin@example.com
-WP_TITLE=My Site
-DATA_PATH=~/data
+- DOMAIN_NAME: your local domain, used by NGINX and WordPress to build the site URL.
+- DB_NAME: the name of the MariaDB database that WordPress will use.
+- DB_USER: the database user that WordPress uses to connect to MariaDB.
+- DB_PASSWORD: the password for `DB_USER`.
+- DB_HOST: the hostname of the database container, usually `mariadb`.
+- MYSQL_ROOT_PASSWORD: the MariaDB root password used when the database container is initialized.
+- WP_ADMIN_USER: the username for the WordPress administrator account.
+- WP_ADMIN_PASSWORD: the password for the WordPress administrator account.
+- WP_ADMIN_EMAIL: the email address for the WordPress administrator account.
+- WP_USER`: the username for the extra WordPress user created by the entrypoint script.
+- WP_USER_PASSWORD: the password for that extra WordPress user.
+- WP_USER_EMAIL: the email address for that extra WordPress user
 ```
 
-**4. Create the secrets files**
 
-```bash
-mkdir -p secrets
-echo "your_db_password"       > secrets/db_password.txt
-echo "your_db_root_password"  > secrets/db_root_password.txt
-echo "your_wp_admin_password" > secrets/wp_admin_password.txt
-```
-
-These files are read by Docker at runtime and mounted inside the containers. Never commit them.
 
 ## Build and launch
 
@@ -96,7 +92,6 @@ Data is persisted through two named Docker volumes:
 | `wordpress_data` | WordPress files (themes, uploads, plugins) | `~/data/wordpress` |
 | `mariadb_data` | MariaDB database files | `~/data/mariadb` |
 
-The host path is controlled by `DATA_PATH` in your `.env` file.
 
 Data survives `make down` and `make stop`. Only `make fclean` wipes the volumes.
 
@@ -106,10 +101,6 @@ Data survives `make down` and `make stop`. Only `make fclean` wipes the volumes.
 inception/
 ├── Makefile
 ├── .env
-├── secrets/
-│   ├── db_password.txt
-│   ├── db_root_password.txt
-│   └── wp_admin_password.txt
 └── srcs/
     ├── docker-compose.yml
     └── requirements/

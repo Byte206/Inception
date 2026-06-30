@@ -36,18 +36,22 @@ Log in with the admin credentials defined in your `.env` file.
 
 ## Credentials
 
-All credentials are stored in two places:
+All credentials are stored in the .env file:
 
-- **`.env`** — contains usernames, database name, and domain config
-- **`secrets/`** — contains password files (one password per file)
+- **`.env`** — contains usernames, database name, and domain config,you can copy or paste your .env or create a new one with makefile
 
-| What | Where |
-|------|-------|
-| WP admin username | `.env` → `WP_ADMIN_USER` |
-| WP admin password | `secrets/wp_admin_password.txt` |
-| DB username | `.env` → `MYSQL_USER` |
-| DB password | `secrets/db_password.txt` |
-| DB root password | `secrets/db_root_password.txt` |
+- `DOMAIN_NAME`: your local domain, used by NGINX and WordPress to build the site URL.
+- `DB_NAME`: the name of the MariaDB database that WordPress will use.
+- `DB_USER`: the database user that WordPress uses to connect to MariaDB.
+- `DB_PASSWORD`: the password for `DB_USER`.
+- `DB_HOST`: the hostname of the database container, usually `mariadb`.
+- `MYSQL_ROOT_PASSWORD`: the MariaDB root password used when the database container is initialized.
+- `WP_ADMIN_USER`: the username for the WordPress administrator account.
+- `WP_ADMIN_PASSWORD`: the password for the WordPress administrator account.
+- `WP_ADMIN_EMAIL`: the email address for the WordPress administrator account.
+- `WP_USER`: the username for the extra WordPress user created by the entrypoint script.
+- `WP_USER_PASSWORD`: the password for that extra WordPress user.
+- `WP_USER_EMAIL`: the email address for that extra WordPress user
 
 ## Checking that everything is running
 

@@ -22,15 +22,8 @@ The point of the project is to understand how containers work, how they communic
 127.0.0.1   yourlogin.42.fr
 ```
 
-**2. Create your secrets files:**
-```bash
-mkdir -p secrets
-echo "your_db_password"      > secrets/db_password.txt
-echo "your_db_root_password" > secrets/db_root_password.txt
-echo "your_wp_admin_password"> secrets/wp_admin_password.txt
-```
 
-**3. Fill in `.env` with your settings** (login, domain, db name, etc.)
+**2. Fill in `.env` with your settings** (login, domain, db name, etc.)
 
 You can create this file manually or let the `Makefile` create it for you the first time you run `make all`. If `srcs/.env` does not exist, `make all` will ask you for each value and generate the file automatically.
 
@@ -49,7 +42,7 @@ The variables used in `.env` are:
 - `WP_USER_PASSWORD`: the password for that extra WordPress user.
 - `WP_USER_EMAIL`: the email address for that extra WordPress user.
 
-**4. Run:**
+**3. Run:**
 ```bash
 make
 ```
@@ -70,4 +63,4 @@ make re     # full rebuild
 - [WP-CLI](https://wp-cli.org/)
 - [MariaDB docs](https://mariadb.com/kb/en/documentation/)
 
-**AI usage:** Claude (claude.ai) was used to debug config issues and clarify concepts like FastCGI passthrough, WP-CLI scripting, and Docker volume behavior. It didn't write the code, but it helped understand why things weren't working.
+**AI usage:** Claude (claude.ai) was used to debug config issues and clarify concepts like FastCGI passthrough, WP-CLI scripting, and Docker volume behavior.
